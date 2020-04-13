@@ -321,6 +321,7 @@ typedef enum ePropertyID {
 	ePropertyID_Axis_LabelFrequency = 6926, /*!< Axis_LabelFrequency */ 
 	ePropertyID_Axis_TickLength = 6927, /*!< Axis_TickLength */ 
 	ePropertyID_Axis_DecimalPlaces = 6928, /*!< Axis_DecimalPlaces */ 
+	ePropertyID_Axis_LabelIncrement = 6929, /*!< Axis_LabelIncrement */ 
 	ePropertyID_LinePlot_R = 7168, /*!< LinePlot_R */ 
 	ePropertyID_LinePlot_G = 7169, /*!< LinePlot_G */ 
 	ePropertyID_LinePlot_B = 7170, /*!< LinePlot_B */ 
@@ -505,6 +506,19 @@ typedef enum eStartupMode {
 	eStartupMode_ResetCMD = 3, /*!< ResetCMD */ 
 } eStartupMode;
 
+/*! enum eLinkStatus */
+typedef enum eLinkStatus {
+	eLinkStatus_Down = 0, /*!< Down */ 
+	eLinkStatus_Up = 1, /*!< Up */ 
+} eLinkStatus;
+
+/*! enum eLinkSpeed */
+typedef enum eLinkSpeed {
+	eLinkSpeed_NA = 0, /*!< NA */ 
+	eLinkSpeed_Speed10Mbit = 1, /*!< Speed10Mbit */ 
+	eLinkSpeed_Speed100Mbit = 2, /*!< Speed100Mbit */ 
+} eLinkSpeed;
+
 /*! enum eDataSetMode */
 typedef enum eDataSetMode {
 	eDataSetMode_Fixed = 0, /*!< Fixed */ 
@@ -629,6 +643,7 @@ typedef enum eGtt25Command {
 	eGtt25Command_GTTModule_ScreenShot = 6150, /*!< GTTModule_ScreenShot */ 
 	eGtt25Command_GTTModule_StartCommsLog = 6151, /*!< GTTModule_StartCommsLog */ 
 	eGtt25Command_GTTModule_StopCommsLog = 6152, /*!< GTTModule_StopCommsLog */ 
+	eGtt25Command_GTTModule_GetEthernetStatus = 6153, /*!< GTTModule_GetEthernetStatus */ 
 	eGtt25Command_DataSet_Initialize = 6400, /*!< DataSet_Initialize */ 
 	eGtt25Command_DataSet_SetData = 6401, /*!< DataSet_SetData */ 
 	eGtt25Command_DataSet_PushData = 6402, /*!< DataSet_PushData */ 
@@ -658,6 +673,20 @@ typedef enum eFlowControl {
 	eFlowControl_Off = 0, /*!< Off */ 
 	eFlowControl_RTSCTS = 1, /*!< RTSCTS */ 
 } eFlowControl;
+
+/*! enum eCommsFlags */
+typedef enum eCommsFlags {
+	eCommsFlags_None = 0, /*!< None */ 
+	eCommsFlags_SecureOnly = 1, /*!< SecureOnly */ 
+	eCommsFlags_NoResponses = 2, /*!< NoResponses */ 
+} eCommsFlags;
+
+/*! enum eSecureStatus */
+typedef enum eSecureStatus {
+	eSecureStatus_CRCOk = 0, /*!< CRCOk */ 
+	eSecureStatus_CRCFail = 1, /*!< CRCFail */ 
+	eSecureStatus_Timeout = 2, /*!< Timeout */ 
+} eSecureStatus;
 
 /*! enum eControlCharacterMode */
 typedef enum eControlCharacterMode {
@@ -767,6 +796,7 @@ typedef enum eStatusCode {
 	eStatusCode_InvalidPropertyType = 130, /*!< InvalidPropertyType */ 
 	eStatusCode_InvalidObjectType = 131, /*!< InvalidObjectType */ 
 	eStatusCode_InvalidIndex = 132, /*!< InvalidIndex */ 
+	eStatusCode_Timeout = 253, /*!< Timeout */ 
 	eStatusCode_Success = 254, /*!< Success */ 
 	eStatusCode_UnknownException = 255, /*!< UnknownException */ 
 } eStatusCode;

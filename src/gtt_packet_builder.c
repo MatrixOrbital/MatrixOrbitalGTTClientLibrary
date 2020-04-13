@@ -59,11 +59,12 @@ void gtt_packetbuilder_send(gtt_device *device)
 {
 	if (device->secured_packets)
 	{
+		size_t index = 0;
 		do
 		{
 			device->Write(device, device->tx_buffer, device->tx_index);
-			gtt_parser_waitpacket(device, 251);
-		} while (device->rx_buffer[0] != 0);
+			index = gtt_parser_waitpacket(device, 251);
+		} while (device->rx_buffer[index] != 0);
 	}
 	else
 	{

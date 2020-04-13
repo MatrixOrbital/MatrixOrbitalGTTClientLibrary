@@ -4,11 +4,31 @@
 #include "gtt_protocol.h"
 #include "gtt_events.h"
 
+uint8_t  gtt_parser_purge_stale_waits(gtt_device *device)
+{
+	uint8_t workDone = 0;
+
+	if (!device->wait_idx)
+		return 0;
+	
+	for (size_t i = 0; i < device->wait_idx; i++)
+	{
+		if (device->waitlist[i].TimeoutPacket && (device->Parser.CurrentPacket > device->waitlist[i].TimeoutPacket))
+		{
+			device->waitlist[i].Done = 2;
+			workDone = 1;
+		}
+	}
+	return workDone;
+}
+
+
 uint8_t gtt_process_packet(gtt_device *device, size_t packetstart)
 {
 	size_t originalstart = device->Parser.PacketStart;
 	uint8_t WaitingPacket = 0;
 	uint8_t Result = 0;
+	device->Parser.CurrentPacket++;
 	for (size_t i = 0; i < device->wait_idx; i++)
 	{
 		if (!device->waitlist[i].Done)
@@ -89,6 +109,7 @@ uint8_t gtt_process_packet(gtt_device *device, size_t packetstart)
 	{
 		device->Parser.Index = originalstart;
 	}
+	gtt_parser_purge_stale_waits(device);
 	return Result;
 }
 
@@ -169,19 +190,32 @@ size_t gtt_parser_waitpacket(gtt_device *device,int packetType)
 	return result;
 }
 
-size_t gtt_parser_waitpacket_250(gtt_device *device, uint16_t commandID)
+uint8_t gtt_parser_waitpacket_250(gtt_device *device, uint16_t commandID, size_t *out_PacketStart)
 {
+	if (device->wait_idx == 0)
+	{
+		device->Parser.CurrentPacket = 0;
+	}
 	gtt_waitlist_item *item;
 	item = &device->waitlist[device->wait_idx++];
 	item->Command = 250;
 	item->SubCommand = commandID;
 	item->Done = 0;
+	if (device->Parser.PacketTimeoutCount)
+	{
+		item->TimeoutPacket = device->Parser.CurrentPacket + device->Parser.PacketTimeoutCount;
+	}
+	else
+	{
+		item->TimeoutPacket = 0;
+	}
 	while (!item->Done)
 		gtt_parser_process(device);
 	device->wait_idx--;
 	size_t result = device->Parser.PacketStart;
 	device->Parser.Index = item->PacketStart;
-	return result+2;
+	*out_PacketStart = result + 2;
+	return item->Done;
 }
 
 
@@ -309,4 +343,9 @@ gtt_text gtt_parser_getText(gtt_device* device, size_t index, size_t *outIndex)
 	result.Data = &device->rx_buffer[index];
 	*outIndex = index + result.Length;
 	return result;
+}
+
+void gtt_parser_setPacketTimeout(gtt_device* device, size_t packets)
+{
+	device->Parser.PacketTimeoutCount = packets;
 }

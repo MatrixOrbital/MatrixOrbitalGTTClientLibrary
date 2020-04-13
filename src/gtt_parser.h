@@ -24,13 +24,16 @@ typedef struct
 	size_t Length;
 	size_t Index;
 	size_t PacketStart;
-
+	size_t CurrentPacket;       /*  Currently processing packer number */
+	size_t PacketTimeoutCount;  /*  Number of packets to wait before a request times out */
 } gtt_parser;
 
+
+void gtt_parser_setPacketTimeout(gtt_device* device, size_t packets); /* If a response is not recieved within n packets cancel the request */
 uint8_t gtt_process_packet(gtt_device *device, size_t packetstart);
 uint8_t gtt_parser_process(gtt_device *device);
 size_t gtt_parser_waitpacket(gtt_device *device, int packetType);
-size_t gtt_parser_waitpacket_250(gtt_device *device, uint16_t commandID);
+uint8_t gtt_parser_waitpacket_250(gtt_device *device, uint16_t commandID, size_t *out_PacketStart);
 
 uint16_t gtt_parser_getU16(gtt_device* device, size_t index, size_t *outIndex);
 uint8_t gtt_parser_getU8(gtt_device* device, size_t index, size_t *outIndex);

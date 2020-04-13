@@ -24,6 +24,7 @@ typedef struct gtt_waitlist_item
 	uint8_t Done;            /* out: Has this packet been recieved */
 	uint8_t Command;         /* in: Packet Type to look for */
 	uint16_t SubCommand;     /* in: for 2.5 packets, the sub command to look for */
+	size_t TimeoutPacket;    /* in: Packet number this query will time out at */
 	size_t PacketStart;      /* out: Index in the RX Buffer where this data starts */
 	size_t Length;           /* out: Length of this packet */
 } gtt_waitlist_item;

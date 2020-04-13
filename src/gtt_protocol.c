@@ -2334,6 +2334,24 @@ void gtt_set_i2c_address(gtt_device *device, uint8_t I2Caddress)
 	gtt_packetbuilder_send(device);
 }
 
+uint8_t gtt_set_comms_flags(gtt_device *device, eCommsFlags Data)
+{
+	uint8_t result;
+
+	gtt_packetbuilder_start(device);
+	gtt_packetbuilder_writeU8(device,GTT_PREFIX);
+	gtt_packetbuilder_writeU8(device,251);
+	gtt_packetbuilder_writeU8(device,Data);
+	gtt_packetbuilder_end(device);
+
+	gtt_packetbuilder_send(device);
+	size_t index = gtt_parser_waitpacket(device, 251);
+
+	result = gtt_parser_getU8(device,index, &index);
+
+	return result;
+}
+
 char * gtt_echo(gtt_device *device, char * Message)
 {
 	char * result;
@@ -2363,7 +2381,13 @@ eStatusCode gtt25_baseobject_create(gtt_device* device, eObjectType ObjectType, 
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_Create);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_Create,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2379,7 +2403,13 @@ eStatusCode gtt25_baseobject_destroy(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_Destroy);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_Destroy,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2395,7 +2425,13 @@ eStatusCode gtt25_baseobject_begin_update(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_BeginUpdate);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_BeginUpdate,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2411,7 +2447,13 @@ eStatusCode gtt25_baseobject_end_update(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_EndUpdate);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_EndUpdate,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2429,7 +2471,13 @@ eStatusCode gtt25_baseobject_set_property_u8(gtt_device* device, uint16_t Object
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyU8);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyU8,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2446,7 +2494,13 @@ eStatusCode gtt25_baseobject_get_property_u8(gtt_device* device, uint16_t Object
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyU8);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyU8,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getU8(device,index,&index);
@@ -2465,7 +2519,13 @@ eStatusCode gtt25_baseobject_set_property_u16(gtt_device* device, uint16_t Objec
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyU16);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyU16,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2482,7 +2542,13 @@ eStatusCode gtt25_baseobject_get_property_u16(gtt_device* device, uint16_t Objec
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyU16);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyU16,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getU16(device,index,&index);
@@ -2501,7 +2567,13 @@ eStatusCode gtt25_baseobject_set_property_s16(gtt_device* device, uint16_t Objec
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyS16);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyS16,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2518,7 +2590,13 @@ eStatusCode gtt25_baseobject_get_property_s16(gtt_device* device, uint16_t Objec
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyS16);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyS16,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getS16(device,index,&index);
@@ -2537,7 +2615,13 @@ eStatusCode gtt25_baseobject_set_property_text(gtt_device* device, uint16_t Obje
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyText);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyText,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2554,7 +2638,13 @@ eStatusCode gtt25_baseobject_get_property_text(gtt_device* device, uint16_t Obje
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyText);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyText,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getText(device,index,&index);
@@ -2573,7 +2663,13 @@ eStatusCode gtt25_baseobject_set_property_eval(gtt_device* device, uint16_t Obje
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyEval);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyEval,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2588,7 +2684,13 @@ eStatusCode gtt25_baseobject_destroy_all(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_DestroyAll);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_DestroyAll,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2604,7 +2706,13 @@ eStatusCode gtt25_baseobject_get_object_type(gtt_device* device, uint16_t Object
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetObjectType);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetObjectType,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_ObjectType = gtt_parser_getU8(device,index,&index);
@@ -2623,7 +2731,13 @@ eStatusCode gtt25_baseobject_append_property_text(gtt_device* device, uint16_t O
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_AppendPropertyText);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_AppendPropertyText,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2641,7 +2755,13 @@ eStatusCode gtt25_baseobject_set_event_handler(gtt_device* device, uint16_t Obje
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetEventHandler);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetEventHandler,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2659,7 +2779,13 @@ eStatusCode gtt25_baseobject_set_property_float(gtt_device* device, uint16_t Obj
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyFloat);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyFloat,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2676,7 +2802,13 @@ eStatusCode gtt25_baseobject_get_property_float(gtt_device* device, uint16_t Obj
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyFloat);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyFloat,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getFloat(device,index,&index);
@@ -2695,7 +2827,13 @@ eStatusCode gtt25_baseobject_set_property_number(gtt_device* device, uint16_t Ob
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyNumber);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_SetPropertyNumber,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2712,7 +2850,13 @@ eStatusCode gtt25_baseobject_get_property_number(gtt_device* device, uint16_t Ob
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyNumber);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_GetPropertyNumber,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Value = gtt_parser_getNumber(device,index,&index);
@@ -2728,7 +2872,13 @@ eStatusCode gtt25_baseobject_process_changes(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_ProcessChanges);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_BaseObject_ProcessChanges,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2754,7 +2904,13 @@ eStatusCode gtt25_visualobject_invalidate(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_Invalidate);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_Invalidate,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2772,7 +2928,13 @@ eStatusCode gtt25_visualobject_add_dependency(gtt_device* device, uint16_t Objec
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_AddDependency);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_AddDependency,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2788,7 +2950,13 @@ eStatusCode gtt25_visualobject_set_focus(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_SetFocus);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_SetFocus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2804,7 +2972,13 @@ eStatusCode gtt25_visualobject_next_focus(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_NextFocus);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_NextFocus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2820,7 +2994,13 @@ eStatusCode gtt25_visualobject_prev_focus(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_PrevFocus);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_PrevFocus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2835,7 +3015,13 @@ eStatusCode gtt25_visualobject_global_next_focus(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_GlobalNextFocus);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_GlobalNextFocus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2850,7 +3036,13 @@ eStatusCode gtt25_visualobject_global_prev_focus(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_GlobalPrevFocus);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_GlobalPrevFocus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -2867,7 +3059,13 @@ eStatusCode gtt25_visualobject_add_object_dependency(gtt_device* device, uint16_
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_AddObjectDependency);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_VisualObject_AddObjectDependency,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3784,7 +3982,13 @@ eStatusCode gtt25_nineslice_load(gtt_device* device, uint16_t ObjectID, gtt_text
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_NineSlice_Load);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_NineSlice_Load,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3801,7 +4005,13 @@ eStatusCode gtt25_bitmap_load(gtt_device* device, uint16_t ObjectID, gtt_text  P
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Bitmap_Load);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Bitmap_Load,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3821,7 +4031,13 @@ eStatusCode gtt25_bitmap_capture(gtt_device* device, uint16_t ObjectID, uint16_t
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Bitmap_Capture);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Bitmap_Capture,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3838,7 +4054,13 @@ eStatusCode gtt25_font_load(gtt_device* device, uint16_t ObjectID, gtt_text  Pat
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Font_Load);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Font_Load,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3857,7 +4079,13 @@ eStatusCode gtt25_font_cache(gtt_device* device, uint16_t ObjectID, uint8_t Font
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Font_Cache);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Font_Cache,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3874,7 +4102,13 @@ eStatusCode gtt25_font_clear_cache(gtt_device* device, uint16_t ObjectID, uint8_
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Font_ClearCache);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Font_ClearCache,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3889,7 +4123,13 @@ eStatusCode gtt25_font_clear_cache_all(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Font_ClearCacheAll);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Font_ClearCacheAll,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3905,7 +4145,13 @@ eStatusCode gtt25_font_set_auto_cache_size_limit(gtt_device* device, uint32_t Si
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Font_SetAutoCacheSizeLimit);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Font_SetAutoCacheSizeLimit,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3921,7 +4167,13 @@ eStatusCode gtt25_filesystem_get_file_size(gtt_device* device, gtt_text  Path, u
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFileSize);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFileSize,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Size = gtt_parser_getU32(device,index,&index);
@@ -3937,7 +4189,13 @@ eStatusCode gtt25_filesystem_get_free_space(gtt_device* device, uint32_t* out_Si
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFreeSpace);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFreeSpace,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Size = gtt_parser_getU32(device,index,&index);
@@ -3955,7 +4213,13 @@ eStatusCode gtt25_filesystem_move(gtt_device* device, gtt_text  FromPath, gtt_te
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_Move);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_Move,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -3971,7 +4235,13 @@ eStatusCode gtt25_filesystem_get_crc(gtt_device* device, gtt_text  Path, uint32_
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetCRC);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetCRC,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_CRC = gtt_parser_getU32(device,index,&index);
@@ -3988,7 +4258,13 @@ eStatusCode gtt25_filesystem_get_files(gtt_device* device, gtt_text  Path, gtt_b
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFiles);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_GetFiles,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Result = gtt_parser_getByteArrayL16(device,index,&index);
@@ -4005,7 +4281,13 @@ eStatusCode gtt25_filesystem_create_folder(gtt_device* device, gtt_text  Path)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_CreateFolder);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_CreateFolder,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4022,7 +4304,13 @@ eStatusCode gtt25_filesystem_delete_folder(gtt_device* device, gtt_text  Path, u
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_DeleteFolder);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_DeleteFolder,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4040,7 +4328,13 @@ eStatusCode gtt25_filesystem_file_write(gtt_device* device, gtt_text  Path, uint
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileWrite);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileWrite,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4058,7 +4352,13 @@ eStatusCode gtt25_filesystem_file_read(gtt_device* device, gtt_text  Path, uint3
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileRead);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileRead,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_FileData = gtt_parser_getByteArrayL16(device,index,&index);
@@ -4075,7 +4375,13 @@ eStatusCode gtt25_filesystem_file_delete(gtt_device* device, gtt_text  Path)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileDelete);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_FileDelete,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4092,7 +4398,13 @@ eStatusCode gtt25_filesystem_start_xmodem_upload(gtt_device* device, gtt_text  P
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_StartXmodemUpload);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_StartXmodemUpload,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4108,7 +4420,13 @@ eStatusCode gtt25_filesystem_test_method(gtt_device* device, gtt_text  Path, uin
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_TestMethod);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_FileSystem_TestMethod,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Size = gtt_parser_getU32(device,index,&index);
@@ -4360,7 +4678,13 @@ eStatusCode gtt25_gttmodule_setup_usb_direct_write(gtt_device* device, uint16_t 
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetupUSBDirectWrite);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetupUSBDirectWrite,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4376,7 +4700,13 @@ eStatusCode gtt25_gttmodule_setup_usb_direct_write_palette(gtt_device* device, g
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetupUSBDirectWritePalette);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetupUSBDirectWritePalette,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4391,7 +4721,13 @@ eStatusCode gtt25_gttmodule_get_last_startup_flag(gtt_device* device, eStartupMo
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_GetLastStartupFlag);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_GetLastStartupFlag,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Mode = gtt_parser_getU8(device,index,&index);
@@ -4407,7 +4743,13 @@ eStatusCode gtt25_gttmodule_reset(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_Reset);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_Reset,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4424,7 +4766,13 @@ eStatusCode gtt25_gttmodule_set_m_a_c_address_method(gtt_device* device, uint32_
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetMACAddressMethod);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_SetMACAddressMethod,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4439,7 +4787,13 @@ eStatusCode gtt25_gttmodule_get_m_a_c_address_method(gtt_device* device, gtt_byt
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_GetMACAddressMethod);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_GetMACAddressMethod,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_MACAddress = gtt_parser_getByteArrayL16(device,index,&index);
@@ -4456,7 +4810,13 @@ eStatusCode gtt25_gttmodule_screen_shot(gtt_device* device, gtt_text  FileName)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_ScreenShot);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_ScreenShot,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4471,7 +4831,13 @@ eStatusCode gtt25_gttmodule_start_comms_log(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_StartCommsLog);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_StartCommsLog,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4486,9 +4852,42 @@ eStatusCode gtt25_gttmodule_stop_comms_log(gtt_device* device)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_StopCommsLog);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_StopCommsLog,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
+	return (eStatusCode)status;
+}
+
+eStatusCode gtt25_gttmodule_get_ethernet_status(gtt_device* device, eLinkStatus* out_LinkStatus, eLinkSpeed* out_LinkSpeed, uint32_t* out_IP, uint32_t* out_NetMask, uint32_t* out_Gateway, eOnOff* out_DHCP   )
+{
+	gtt_packetbuilder_start(device);
+	gtt_packetbuilder_writeU8(device,GTT_PREFIX);
+	gtt_packetbuilder_writeU8(device,250);
+	gtt_packetbuilder_writeU16(device,eGtt25Command_GTTModule_GetEthernetStatus);
+	gtt_packetbuilder_end(device);
+
+	gtt_packetbuilder_send(device);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_GTTModule_GetEthernetStatus,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
+
+	uint8_t status = gtt_parser_getU8(device,index,&index);
+	*out_LinkStatus = gtt_parser_getU8(device,index,&index);
+	*out_LinkSpeed = gtt_parser_getU8(device,index,&index);
+	*out_IP = gtt_parser_getU32(device,index,&index);
+	*out_NetMask = gtt_parser_getU32(device,index,&index);
+	*out_Gateway = gtt_parser_getU32(device,index,&index);
+	*out_DHCP    = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
 }
 
@@ -4512,7 +4911,13 @@ eStatusCode gtt25_dataset_initialize(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Initialize);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Initialize,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4530,7 +4935,13 @@ eStatusCode gtt25_dataset_set_data(gtt_device* device, uint16_t ObjectID, uint16
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_SetData);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_SetData,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4547,7 +4958,13 @@ eStatusCode gtt25_dataset_push_data(gtt_device* device, uint16_t ObjectID, gtt_n
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_PushData);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_PushData,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4564,7 +4981,13 @@ eStatusCode gtt25_dataset_save(gtt_device* device, uint16_t ObjectID, gtt_text  
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Save);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Save,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4581,7 +5004,13 @@ eStatusCode gtt25_dataset_load(gtt_device* device, uint16_t ObjectID, gtt_text  
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Load);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_DataSet_Load,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4638,7 +5067,13 @@ eStatusCode gtt25_objectlist_add(gtt_device* device, uint16_t ObjectID, uint16_t
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Add);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Add,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4655,7 +5090,13 @@ eStatusCode gtt25_objectlist_remove(gtt_device* device, uint16_t ObjectID, uint1
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Remove);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Remove,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4671,7 +5112,13 @@ eStatusCode gtt25_objectlist_count(gtt_device* device, uint16_t ObjectID, uint32
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Count);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Count,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_Count = gtt_parser_getU32(device,index,&index);
@@ -4689,7 +5136,13 @@ eStatusCode gtt25_objectlist_get(gtt_device* device, uint16_t ObjectID, uint32_t
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Get);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Get,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	*out_ItemID = gtt_parser_getU16(device,index,&index);
@@ -4706,7 +5159,13 @@ eStatusCode gtt25_objectlist_clear(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Clear);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_ObjectList_Clear,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4744,7 +5203,13 @@ eStatusCode gtt25_animation_add_frame(gtt_device* device, uint16_t ObjectID, uin
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_AddFrame);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_AddFrame,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4760,7 +5225,13 @@ eStatusCode gtt25_animation_start(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_Start);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_Start,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;
@@ -4776,7 +5247,13 @@ eStatusCode gtt25_animation_stop(gtt_device* device, uint16_t ObjectID)
 	gtt_packetbuilder_end(device);
 
 	gtt_packetbuilder_send(device);
-	size_t index = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_Stop);
+	size_t index;
+	uint8_t transfer_status = gtt_parser_waitpacket_250(device,eGtt25Command_Animation_Stop,&index);
+
+	if(transfer_status == 2)
+	{
+		return eStatusCode_Timeout;
+	}
 
 	uint8_t status = gtt_parser_getU8(device,index,&index);
 	return (eStatusCode)status;

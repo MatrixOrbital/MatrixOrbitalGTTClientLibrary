@@ -1333,6 +1333,12 @@ void gtt_assign_key_codes(gtt_device *device, gtt_bytearray_l8  KeyCodes);
 */
 void gtt_set_i2c_address(gtt_device *device, uint8_t I2Caddress);
 /*!
+ SetCommsFlags
+@param[in] gtt_device the target gtt device
+@param[in] Data Enable
+*/
+uint8_t gtt_set_comms_flags(gtt_device *device, eCommsFlags Data);
+/*!
  Echo
 @param[in] gtt_device the target gtt device
 @param[in] Message An arbitrary string that the module will return.  Limited to 4KB in length.
@@ -2077,6 +2083,13 @@ eStatusCode gtt25_gttmodule_start_comms_log(gtt_device* device);
 @param[in] gtt_device the target gtt device
 */
 eStatusCode gtt25_gttmodule_stop_comms_log(gtt_device* device);
+
+
+/*!
+ 
+@param[in] gtt_device the target gtt device
+*/
+eStatusCode gtt25_gttmodule_get_ethernet_status(gtt_device* device, eLinkStatus* out_LinkStatus, eLinkSpeed* out_LinkSpeed, uint32_t* out_IP, uint32_t* out_NetMask, uint32_t* out_Gateway, eOnOff* out_DHCP   );
 
 
 eStatusCode gtt25_get_gttmodule_backlight(gtt_device * device, uint16_t ObjectID, uint8_t* result);
